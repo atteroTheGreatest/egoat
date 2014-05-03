@@ -199,7 +199,7 @@ class Client:
         return check_sums
 
     def load_state(self):
-        directory = (directory if isinstance(self.directory, bytes)
+        directory = (self.directory if isinstance(self.directory, bytes)
                      else bytes(self.directory, 'utf-8'))
 
         storage_filename = self.CHECKSUM_STORAGE + \
