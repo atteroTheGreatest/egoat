@@ -7,7 +7,7 @@
 {% for address, announcement in announcements.items() %}
     <li><h3>{{ address }}</h3>
     {% for checksum, file in announcement.items() %}
-        <p>Cheksum: {{ checksum }}</p>
+        <p>Checksum: {{ checksum }}</p>
         <p>Filename: {{ file }} </p>
     {% endfor %}
   {% else %}
