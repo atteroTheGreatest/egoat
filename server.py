@@ -14,10 +14,10 @@ TIMEOUT = 3
 def load_data():
     rclient = redis.Redis()
     announcements = {}
-    announcement_keys = rclient.keys(REDIS_LIST + "*")
+    announcement_keys = rclient.keys(REDIS_LIST + '*')
     for key in announcement_keys:
         json_announcement = rclient.get(key)
-        address = key.split("::")[-1]
+        address = key.split(b'::')[-1]
         announcements[address] = json.loads(json_announcement)
     return announcements
 

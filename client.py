@@ -185,26 +185,26 @@ class Client:
         self.check_sums = self.load_state()
 
     def discover(self):
-        def whole_path(base, filename):
-            return base + "/" + filename
-
-        return [whole_path(self.directory, filename)
+        return [os.path.join(self.directory, filename)
                 for filename in (os.listdir(self.directory))
-                if os.path.isfile(whole_path(self.directory, filename))]
+                if os.path.isfile(os.path.join(self.directory, filename))]
 
     def compute_check_sums(self, filenames):
         check_sums = {}
         for filename in filenames:
-            with open(filename, 'r') as f:
+            with open(filename, 'rb') as f:
                 file_content = f.read()
-                check_sums[str(sha512(file_content).hexdigest())] = filename
+                check_sums[sha512(file_content).hexdigest()] = filename
 
         return check_sums
 
     def load_state(self):
+        directory = (self.directory if isinstance(self.directory, bytes)
+                     else bytes(self.directory, 'utf-8'))
+
+        storage_filename = self.CHECKSUM_STORAGE + \
+            sha512(directory).hexdigest()
         try:
-            storage_filename = self.CHECKSUM_STORAGE + \
-                str(sha512(self.directory).hexdigest())
             with open(storage_filename, 'r') as f:
                 check_sums = json.load(f)
         except IOError:
@@ -279,7 +279,7 @@ def main(*args, **kwargs):
 
     parser.add_argument("directory", type=str, help="Directory to serve.")
     parser.add_argument("address", type=str, help="Addres to serve on.")
-    parser.add_argument("-s", "--server_url", type=str, default="atte.ro",
+    parser.add_argument("-s", "--server_url", type=str, default="http://127.0.0.1:5000/",
                         help="Server to announce files.")
     parser.add_argument("-c", "--checksum", type=str, default=None,
                         help="Checksum of file you want to download")
